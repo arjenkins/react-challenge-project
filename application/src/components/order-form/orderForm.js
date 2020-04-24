@@ -10,15 +10,25 @@ const mapStateToProps = (state) => ({
     auth: state.auth,
 })
 
+
 class OrderForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
             order_item: "",
-            quantity: "1"
+            quantity: "1",
         }
+        this.initialState = this.state;
     }
 
+    alertOrder = (success) => {
+    if (!success){
+       return alert('Order was not placed. Please try again') 
+    }
+    alert('Your order has been placed.');
+    this.setState(this.initialState);
+    }
+    
     menuItemChosen(event) {
         this.setState({ order_item: event.target.value });
     }
@@ -26,7 +36,7 @@ class OrderForm extends Component {
     menuQuantityChosen(event) {
         this.setState({ quantity: event.target.value });
     }
-
+    
     submitOrder(event) {
         event.preventDefault();
         if (this.state.order_item === "") return;
@@ -42,10 +52,11 @@ class OrderForm extends Component {
             }
         })
         .then(res => res.json())
-        .then(response => console.log("Success", JSON.stringify(response)))
+        .then(response => this.alertOrder(response.success))
         .catch(error => console.error(error));
     }
 
+    
     render() {
         return (
             <Template>
